@@ -102,6 +102,7 @@ class Game {
             'tanks',
             'left-1.png'
         );
+        this.tank.body.collideWorldBounds = true;
 
         // Set these variables
         this.turretX = this.tank.position.x + this.tank.width - 45;
