@@ -94,7 +94,7 @@ var Game = (function () {
                 this.bullet.body.velocity.x = 100;
             }
         }
-        if (this.leftKey.isDown && !this.fired) {
+        else if (this.leftKey.isDown && !this.fired) {
             this.turret.position.x = this.tank.position.x + 40;
             this.dome.position.x = this.tank.position.x + 30;
             this.dome.position.y = this.domeY + 10;
@@ -107,9 +107,12 @@ var Game = (function () {
         else if (this.rightKey.isDown && !this.fired) {
             this.turret.position.x = this.turretX;
             this.dome.position.x = this.domeX;
+            this.dome.position.y = this.domeY;
             this.tank.body.velocity.x = this.turret.body.velocity.x = this.dome.body.velocity.x = 1000;
             this.tank.animations.play('right');
             this.left = false;
+            this.turret.angle = this.turretAngleRight;
+            this.dome.angle = this.domeAngle;
         }
         else {
             if (this.left) {
