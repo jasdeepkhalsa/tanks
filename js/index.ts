@@ -54,9 +54,9 @@ class Game {
     create() {
         // General game settings
         this.spawnNumber = 2; // this.game.rnd.integerInRange(5, 10);
-        this.game.world.setBounds(0, 0, 1920, 1920);
+        this.game.world.setBounds(0, 0, 1920, 600);
         this.game.stage.backgroundColor = '#2f0f1c';
-        this.game.add.tileSprite(0, 0, 1920, 1920, 'background');
+        this.game.add.tileSprite(0, 0, 1920, 600, 'background');
 
         //  Register the keys.
         this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
