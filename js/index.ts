@@ -283,7 +283,7 @@ class Game {
          this.game.targets,
          function(bullet, target){
              target.damage(1);
-             bullet.destroy();
+             bullet.kill();
              that.fired = false;
              that.game.camera.follow(that.tank);
          }
