@@ -18,6 +18,9 @@ class Game {
     private turretAngleRight;
     private turretAngleLeft;
     private bulletAngle;
+    private bulletVelocityXLeft = -100;
+    private bulletVelocityXRight = 100;
+    private bulletVelocityY = 0
     private speed = 100;
     private text;
     private framerate = 16;
@@ -50,7 +53,7 @@ class Game {
 
     create() {
         // General game settings
-        this.spawnNumber = this.game.rnd.integerInRange(5, 10);
+        this.spawnNumber = 2; // this.game.rnd.integerInRange(5, 10);
         this.game.world.setBounds(0, 0, 1920, 1920);
         this.game.stage.backgroundColor = '#2f0f1c';
         this.game.add.tileSprite(0, 0, 1920, 1920, 'background');
@@ -175,15 +178,12 @@ class Game {
         // Set these variables
         this.turretX = this.tank.position.x + this.tank.width - 45;
         this.turretY = this.tank.position.y + 10;
-        this.turretAngleRight = 270;
-        this.turretAngleLeft = 90;
         this.domeX = this.tank.position.x + this.tank.width - 70;
         this.domeY = this.tank.position.y + 10;
         this.domeAngleLeft = -90;
         this.domeAngle = -60;
         this.bulletX = this.tank.position.x + this.tank.width + 10;
         this.bulletY = this.tank.position.y - 5;
-        this.bulletAngle = 180;
         
         if (this.spaceKey.isDown && this.spaceKey.downDuration(1000) && !this.fired) {
             this.bullet = this.game.bullets.create(
@@ -217,6 +217,7 @@ class Game {
             this.fired = true;
             this.bullet.checkWorldBounds = true;
             this.bullet.outOfBoundsKill = true;
+            this.bullet.body.velocity.y = this.bulletVelocityY;
 
             if (this.left) {
                 this.bullet.position.x = this.tank.position.x - 10;
@@ -226,7 +227,9 @@ class Game {
             } else {
                 this.bullet.body.velocity.x = 100;
             }
-        } else if (this.leftKey.isDown && !this.fired) {
+        }
+        
+        if (this.leftKey.isDown && !this.fired) {
             this.turret.position.x = this.tank.position.x + 40;
             this.dome.position.x = this.tank.position.x + 30;
             this.dome.position.y = this.domeY + 10;
@@ -244,6 +247,18 @@ class Game {
             this.left = false;
             this.turret.angle = this.turretAngleRight;
             this.dome.angle = this.domeAngle;
+        } else if (this.upKey.isDown && this.upKey.downDuration(1000) && !this.fired) {
+            this.turret.angle -= 1;
+            this.turretAngleRight -= 1;
+            this.turretAngleLeft -= 1;
+            this.bulletAngle -= 1;
+            this.bulletVelocityY -= 1;
+        } else if (this.downKey.isDown && this.downKey.downDuration(1000) && !this.fired) {
+            this.turret.angle += 1;
+            this.turretAngleRight += 1;
+            this.turretAngleLeft += 1;
+            this.bulletAngle += 1;
+            this.bulletVelocityY += 1;
         } else {
             if (this.left) {
                 this.tank.animations.play('idle-left');
