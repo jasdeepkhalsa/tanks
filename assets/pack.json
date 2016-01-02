@@ -1,0 +1,30 @@
+{
+    "start": [
+        {
+            "type": "image",
+            "key": "background",
+            "url": "assets/sprites/bg.png",
+            "overwrite": false
+        },
+        {
+            "type": "image",
+            "key": "target",
+            "url": "assets/sprites/target.png",
+            "overwrite": false
+        },
+        {
+            "type": "atlasJSONHash",
+            "key": "tanks",
+            "textureURL": "assets/sprites/tanks.png",
+            "atlasURL": "assets/sprites/tanks.json",
+            "atlasData": null
+        }
+    ],
+    "meta": {
+        "generated": "16:49 Jan 1st 2016",
+        "app": "Jas's First HTML5 Game",
+        "url": "http://phaser.io",
+        "version": "1.0",
+        "copyright": "Jasdeep Khalsa 2016"
+    }
+}
