@@ -53,7 +53,7 @@ class Game {
 
     create() {
         // General game settings
-        this.spawnNumber = 2; // this.game.rnd.integerInRange(5, 10);
+        this.spawnNumber = this.game.rnd.integerInRange(5, 10);
         this.game.world.setBounds(0, 0, 1920, 600);
         this.game.stage.backgroundColor = '#2f0f1c';
         this.game.add.tileSprite(0, 0, 1920, 600, 'background');
