@@ -22,7 +22,10 @@
     "compileOnSave": true,
     "buildOnSave": false,
     "files": [
-        "index.ts"
+        "end.ts",
+        "index.ts",
+        "intro.ts",
+        "play.ts"
     ],
     "atom": {
         "rewriteTsconfig": true
