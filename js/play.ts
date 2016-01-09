@@ -16,6 +16,7 @@ class Play {
     private spaceKey;
     private fired: boolean = false;
     private spawnNumber: number;
+    private changes;
 
     constructor(private game) {
     }
@@ -28,10 +29,10 @@ class Play {
             },
             turret: {
                 right: { x: tank.position.x + tank.width - 45, y: tank.position.y + 10, angle: 270 },
-                left: { x: tank.position.x + 40, y:null, angle: 90 }
+                left: { x: tank.position.x + 40, y: null, angle: 90 }
             },
             bullet: {
-                right: { x: tank.position.x + tank.width + 10, y: tank.position.y - 5, angle: 180, velocityX: 100, velocityY: 0},
+                right: { x: tank.position.x + tank.width + 10, y: tank.position.y - 5, angle: 0, velocityX: 100, velocityY: 0},
                 left: { x: tank.position.x - 10, y: tank.position.y + 28, angle: 180, velocityX: -100 , velocityY: 0}
             },
             general: {
@@ -44,9 +45,7 @@ class Play {
         return defaults;
     }
 
-    preload() {
-        this.game.load.pack('start', 'assets/pack.json');
-    }
+    preload() {}
 
     create() {
         // General game settings
@@ -158,6 +157,9 @@ class Play {
 
         // Camera
         this.game.camera.follow(this.tank);
+
+        // Changing default
+        this.changes = this.defaults();
     }
 
     update() {
@@ -193,14 +195,16 @@ class Play {
             this.fired = true;
             this.bullet.checkWorldBounds = true;
             this.bullet.outOfBoundsKill = true;
-            this.bullet.body.velocity.y = this.defaults().bullet.right.velocityY;
+            this.bullet.body.velocity.y = this.changes.bullet.right.velocityY;
 
             if (this.left) {
                 this.bullet.position.x = this.defaults().bullet.left.x;
-                this.bullet.position.y = this.defaults().bullet.left.y;
-                this.bullet.angle = this.defaults().bullet.left.angle;
+                this.bullet.position.y = this.changes.bullet.left.y;
+                this.bullet.angle = this.changes.bullet.left.angle;
                 this.bullet.body.velocity.x = this.defaults().bullet.left.velocityX;
             } else {
+                this.bullet.position.y = this.changes.bullet.right.y;
+                this.bullet.angle = this.changes.bullet.right.angle;
                 this.bullet.body.velocity.x = this.defaults().bullet.right.velocityX;
             }
         }
@@ -211,7 +215,7 @@ class Play {
             this.turret.position.x = this.defaults().turret.left.x;
             this.dome.position.x = this.defaults().dome.left.x;
             this.dome.position.y = this.defaults().dome.left.y;
-            this.turret.angle = this.defaults().turret.left.angle;
+            this.turret.angle = this.changes.turret.left.angle;
             this.dome.angle = this.defaults().dome.left.angle;
             this.tank.body.velocity.x = this.turret.body.velocity.x = this.dome.body.velocity.x = this.defaults().general.left.velocityX;
         } else if (this.rightKey.isDown && !this.fired) {
@@ -220,36 +224,43 @@ class Play {
             this.turret.position.x = this.defaults().turret.right.x;
             this.dome.position.x = this.defaults().dome.right.x;
             this.dome.position.y = this.defaults().dome.right.y;
-            this.turret.angle = this.defaults().turret.right.angle;
+            this.turret.angle = this.changes.turret.right.angle;
             this.dome.angle = this.defaults().dome.right.angle;
             this.tank.body.velocity.x = this.turret.body.velocity.x = this.dome.body.velocity.x = this.defaults().general.right.velocityX;
         } else if (this.upKey.isDown && this.upKey.downDuration(1000) && !this.fired) {
-            this.defaults().turret.right.angle += this.defaults().general.up.angleIncrement;
-            this.defaults().turret.left.angle += this.defaults().general.up.angleIncrement;
-            this.defaults().bullet.right.angle += this.defaults().general.up.angleIncrement;
-            this.defaults().bullet.right.velocityY += this.defaults().general.up.angleIncrement;
+            this.changes.turret.right.angle += this.changes.general.up.angleIncrement;
+            this.changes.turret.left.angle += this.changes.general.down.angleIncrement;
+            this.changes.bullet.right.angle += this.changes.general.up.angleIncrement;
+            this.changes.bullet.left.angle += this.changes.general.down.angleIncrement;
+            this.changes.bullet.right.velocityY += this.changes.general.up.angleIncrement;
+            this.changes.bullet.left.y += this.changes.general.up.angleIncrement;
+            this.changes.bullet.right.y += this.changes.general.up.angleIncrement;
         } else if (this.downKey.isDown && this.downKey.downDuration(1000) && !this.fired) {
-            this.defaults().turret.right.angle += this.defaults().general.down.angleIncrement;
-            this.defaults().turret.left.angle += this.defaults().general.down.angleIncrement;
-            this.defaults().bullet.right.angle += this.defaults().general.down.angleIncrement;
-            this.defaults().bullet.right.velocityY += this.defaults().general.down.angleIncrement;
+            this.changes.turret.right.angle += this.changes.general.down.angleIncrement;
+            this.changes.turret.left.angle += this.changes.general.up.angleIncrement;
+            this.changes.bullet.right.angle += this.changes.general.down.angleIncrement;
+            this.changes.bullet.left.angle += this.changes.general.up.angleIncrement;
+            this.changes.bullet.right.velocityY += this.changes.general.down.angleIncrement;
+            this.changes.bullet.left.y += this.changes.general.down.angleIncrement;
+            this.changes.bullet.right.y += this.changes.general.down.angleIncrement;
         } else {
-            if (this.left) {
-                this.tank.animations.play('idle-left');
-                this.turret.position.x = this.defaults().turret.left.x;
-                this.dome.position.x = this.defaults().dome.left.x;
-                this.dome.position.y = this.defaults().dome.left.y;
-                this.turret.angle = this.defaults().turret.left.angle;
-            } else {
-                this.tank.animations.play('idle-right');
-                this.turret.angle = this.defaults().turret.right.angle;
-                this.dome.angle = this.defaults().dome.right.angle;
-                this.dome.position.x = this.defaults().dome.right.x;
-                this.dome.position.y = this.defaults().dome.right.y;
-            }
             this.tank.body.velocity.x = 0;
             this.turret.body.velocity.x = 0;
             this.dome.body.velocity.x = 0;
+        }
+
+        if (this.left) {
+            this.tank.animations.play('idle-left');
+            this.turret.position.x = this.defaults().turret.left.x;
+            this.dome.position.x = this.defaults().dome.left.x;
+            this.dome.position.y = this.defaults().dome.left.y;
+            this.turret.angle = this.changes.turret.left.angle;
+        } else {
+            this.tank.animations.play('idle-right');
+            this.dome.angle = this.defaults().dome.right.angle;
+            this.dome.position.x = this.defaults().dome.right.x;
+            this.dome.position.y = this.defaults().dome.right.y;
+            this.turret.angle = this.changes.turret.right.angle;
         }
 
      this.game.physics.arcade.overlap(
