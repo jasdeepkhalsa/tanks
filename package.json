@@ -1,7 +1,7 @@
 {
-  "name": "game",
+  "name": "tanks",
   "version": "1.0.0",
-  "description": "",
+  "description": "Tanks - A HTML5 Phaser Game",
   "main": "js/bundle.js",
   "directories": {
     "doc": "docs"
@@ -18,8 +18,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:jasdeepkhalsa/tanks.git"
+    "url": "git@github.com:jasdeepkhalsa/tanks.git"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Jasdeep Khalsa",
+  "license": "MIT"
 }

@@ -1,10 +1,10 @@
 {
-  "name": "game",
+  "name": "tanks",
   "authors": [
     "Jasdeep Khalsa <jasdeep@simplyspiritdesign.com>"
   ],
-  "description": "",
-  "main": "",
+  "description": "Tanks - A HTML5 Phaser Game",
+  "main": "js/bundle.js",
   "moduleType": [],
   "license": "MIT",
   "homepage": "",
