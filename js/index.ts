@@ -2,9 +2,12 @@ import Intro = require('./intro');
 import Play = require('./play');
 import End = require('./end');
 
-var game = new Phaser.Game(800,600,Phaser.AUTO,'');
-var app = new Play(game);
-game.state.add('Intro', app);
-game.state.add('Play', app);
-game.state.add('End', app);
+const game = new Phaser.Game(800,600,Phaser.AUTO,'');
+const intro = new Intro(game);
+const play = new Play(game);
+const end = new End(game);
+
+game.state.add('Intro', intro);
+game.state.add('Play', play);
+game.state.add('End', end);
 game.state.start('Intro');
