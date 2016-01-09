@@ -3,7 +3,6 @@
 class Play {
     private tank;
     private bullet;
-    private target;
     private turret;
     private dome;
     private text;
@@ -15,10 +14,14 @@ class Play {
     private rightKey;
     private spaceKey;
     private fired: boolean = false;
-    private spawnNumber: number;
+    private targetsSpawned: number;
     private changes;
 
     constructor(private game) {
+    }
+
+    textStyle(size = 64, colour = '#FFF') {
+        return { font: size+'px Monaco, Ubuntu Mono, Menlo, Consolas, monospace', fill: colour }
     }
 
     defaults(tank = this.tank) {
@@ -48,8 +51,11 @@ class Play {
     preload() {}
 
     create() {
+        // Clear down any previous views
+        this.game.world.removeAll();
+
         // General game settings
-        this.spawnNumber = this.game.rnd.integerInRange(5, 10);
+        this.targetsSpawned = this.game.rnd.integerInRange(5, 10);
         this.game.world.setBounds(0, 0, 1920, 600);
         this.game.stage.backgroundColor = '#2f0f1c';
         this.game.add.tileSprite(0, 0, 1920, 600, 'background');
@@ -111,13 +117,14 @@ class Play {
             'bottom-turret-connector.png'
         );
         this.dome.angle = this.defaults().dome.right.angle;
-        for (var i=0;i<this.spawnNumber;i++) {
-            this.target = this.game.targets.create(
+
+        for (var i=0;i<this.targetsSpawned;i++) {
+            let target = this.game.targets.create(
                 this.game.rnd.integerInRange(64, this.game.world.width - 64),
                 this.game.rnd.integerInRange(64, this.game.world.height - 64),
                 'target'
             );
-            this.target.health = 1;
+            target.health = 1;
         };
 
         // Collisions
@@ -156,6 +163,7 @@ class Play {
         );
 
         // Camera
+        this.game.camera.visible = true;
         this.game.camera.follow(this.tank);
 
         // Changing default
@@ -163,6 +171,20 @@ class Play {
     }
 
     update() {
+        // Check if the game is over...
+        var targets = this.game.targets.children;
+        var targetsActive = targets
+            .filter((obj) => obj.exists === true)
+        if (targetsActive <= 0) {
+            this.game.state.start('End');
+            return;
+        } else {
+            if(this.text) this.text.kill();
+            this.text = this.game.add.text(5,5,'Targets to destroy: '+targetsActive.length, this.textStyle(20));
+            this.text.fixedToCamera = true;
+        }
+
+        // Check which key was pressed
         if (this.spaceKey.isDown && this.spaceKey.downDuration(1000) && !this.fired) {
             this.bullet = this.game.bullets.create(
                 this.defaults().bullet.right.x,
@@ -244,35 +266,41 @@ class Play {
             this.changes.bullet.left.y += this.changes.general.down.angleIncrement;
             this.changes.bullet.right.y += this.changes.general.down.angleIncrement;
         } else {
+            // Default, non-moving state
+            if (this.left) {
+                this.tank.animations.play('idle-left');
+            } else {
+                this.tank.animations.play('idle-right');
+            }
             this.tank.body.velocity.x = 0;
             this.turret.body.velocity.x = 0;
             this.dome.body.velocity.x = 0;
         }
 
+        // This should run on each turn depending on whether user is facing left or right
         if (this.left) {
-            this.tank.animations.play('idle-left');
             this.turret.position.x = this.defaults().turret.left.x;
             this.dome.position.x = this.defaults().dome.left.x;
             this.dome.position.y = this.defaults().dome.left.y;
             this.turret.angle = this.changes.turret.left.angle;
         } else {
-            this.tank.animations.play('idle-right');
             this.dome.angle = this.defaults().dome.right.angle;
             this.dome.position.x = this.defaults().dome.right.x;
             this.dome.position.y = this.defaults().dome.right.y;
             this.turret.angle = this.changes.turret.right.angle;
         }
 
-     this.game.physics.arcade.overlap(
-         this.game.bullets,
-         this.game.targets,
-         (bullet, target) => {
-             target.damage(1);
-             bullet.kill();
-             this.fired = false;
-             this.game.camera.follow(this.tank);
-         }
-     );
+        // Collision detection
+        this.game.physics.arcade.overlap(
+            this.game.bullets,
+            this.game.targets,
+            (bullet, target) => {
+                target.damage(1);
+                bullet.kill();
+                this.fired = false;
+                this.game.camera.follow(this.tank);
+            }
+        );
     }
 }
 
